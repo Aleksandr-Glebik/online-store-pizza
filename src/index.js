@@ -9,6 +9,9 @@ import {
 import { Root, ErrorPage, Home, Cart} from './pages/index'
 import './scss/app.scss'
 
+import store from './redux/index'
+import { Provider } from 'react-redux'
+
 const router = createBrowserRouter([
   {
     path: '/',
@@ -29,8 +32,10 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  // <React.StrictMode>
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  // </React.StrictMode>
 )
 

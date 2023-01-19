@@ -1,18 +1,21 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setSortByType } from '../redux/slices/filterSlice'
+
+const arrSortLabel = [
+  {name: 'популярность', type: 'rating'},
+  {name: 'цена', type: 'price'},
+  {name: 'алфавит', type: 'name'}
+]
 
 function SortPopup() {
+  const dispatch = useDispatch()
   const [visiblePopup, setVisiblePopup] = useState(false)
   const sortRef = useRef()
 
-  const [indexActiveLabel, setIndexActiveLabel] = useState(0)
+  const activeLabelType = useSelector( state => state.filters.sortBy.type )
 
-  const arrSortLabel = [
-    'популярность',
-    'цена',
-    'алфавит'
-  ]
-
-  const activeLabel = arrSortLabel[indexActiveLabel]
+  let activeLabelName = arrSortLabel.find( (el) => el.type === activeLabelType).name
 
   const toggleVisiblePopup = () => {
     setVisiblePopup(prev => !prev)
@@ -25,7 +28,8 @@ function SortPopup() {
   }
 
   const manageActiveIndexLabel = (index) => {
-    setIndexActiveLabel(index)
+    let type = arrSortLabel[index].type
+    dispatch(setSortByType(type))
     setVisiblePopup(false)
   }
 
@@ -56,17 +60,17 @@ function SortPopup() {
         <span
           onClick={toggleVisiblePopup}
         >
-          {activeLabel}
+          {activeLabelName}
         </span>
       </div>
       {visiblePopup && <div className="sort__popup">
         <ul>
-          {arrSortLabel.map( (item, index, arr) => (
+          {arrSortLabel.map( (item, index) => (
             <li
-              key={`${item}_${index}`}
+              key={`${item.name}_${item.index}`}
               onClick={() => manageActiveIndexLabel(index)}
-              className={index === indexActiveLabel ? 'active' : ''}
-            >{arr[index]}</li>
+              className={item.type === activeLabelType ? 'active' : ''}
+            >{item.name}</li>
           ))}
         </ul>
       </div>}

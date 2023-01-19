@@ -1,20 +1,29 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { setCategory } from '../redux/slices/filterSlice'
+
+const pizzaCategories = [
+  {name: 'Все', category: 0},
+  {name: 'Мясные', category: 1},
+  {name: 'Вегетарианские', category: 2},
+  {name: 'Гриль', category: 3},
+  {name: 'Острые', category: 4},
+  {name: 'Закрытые', category: 5},
+]
 
 const Categories = () => {
-  const pizzaCategories = ['Все', 'Мясные', 'Вегетарианская', 'Гриль', 'Острые', 'Закрытые']
-
-  const [active, setActive] = useState('Все')
-  // console.log('active', active);
+  const dispatch = useDispatch()
+  const actionCategory = useSelector( (state) => state.filters.category)
 
   return (
     <div className="categories">
         <ul>
-            {pizzaCategories && pizzaCategories.map( (name, ind) => (
+            {pizzaCategories && pizzaCategories.map( (item, ind) => (
                 <li
-                  onClick={() => setActive(name)}
-                  key={`${name}_${ind}`}
-                  className={name === active ? 'active' : ''}
-                >{name}</li>
+                  onClick={() => dispatch(setCategory(ind))}
+                  key={`${item.name}_${ind}`}
+                  className={ind === actionCategory ? 'active' : ''}
+                >{item.name}</li>
             ))}
         </ul>
     </div>
