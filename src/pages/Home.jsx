@@ -1,24 +1,15 @@
 import React, { useEffect} from 'react'
 import { Categories, SortPopup, PizzaBlock } from '../components/index'
-// import axios from 'axios'
 
 import { useDispatch, useSelector } from 'react-redux'
-// import { getAllPizzas } from '../redux/slices/pizzaSlice'
 import { fetchPizzas } from '../redux/slices/pizzaSlice'
+import SkeletonLoadingPizza from '../components/SkeletonLoadingPizza'
 
 function Home() {
   const dispatch = useDispatch()
   const pizzas = useSelector( (state) => state.pizzas.pizzas)
   const { category, sortBy } = useSelector( ({ filters }) => filters)
-
-  // useEffect( () => {
-  //   if (!pizzas.length) {
-  //     axios.get('http://localhost:3000/db.json')
-  //     .then(( { data } ) => {
-  //       dispatch(getAllPizzas(data.pizzas))
-  //     })
-  //   }
-  // }, [dispatch, pizzas.length])
+  const isLoaded = useSelector( (state) => state.pizzas.isLoaded)
 
   useEffect( () => {
     dispatch(fetchPizzas({category, sortBy}))
@@ -32,13 +23,15 @@ function Home() {
       </div>
       <h2 className="content__title">Все пиццы</h2>
         <div className="content__items">
-            {pizzas && pizzas.map( (item) => (
-                <PizzaBlock
-                  key={item.id}
-                  {...item}
-                />
-              ))
-            }
+          {
+            isLoaded
+             ? Array(10).fill(0).map( (_, ind) => <SkeletonLoadingPizza key={ind} />)
+             : pizzas.map( (item) => (
+              <PizzaBlock
+                key={item.id}
+                {...item}
+              />))
+          }
         </div>
     </div>
   )
