@@ -3,7 +3,7 @@ import ContentLoader from "react-content-loader"
 
 const SkeletonLoadingPizza = (props) => (
    <ContentLoader
-   class="skeletonItem"
+   className="skeletonItem"
    speed={2}
    width={280}
    height={459}
