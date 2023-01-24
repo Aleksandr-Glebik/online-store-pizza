@@ -4,7 +4,7 @@ import axios from 'axios'
 export const fetchPizzas = createAsyncThunk(
     'pizzas/fetchPizzas',
     async ( { category, sortBy } ) => {
-        const response = await axios.get(`http://localhost:3001/pizzas?${category !== 0 ? `category=${category}` : ''}&_sort=${sortBy.type}&_order=desc`)
+        const response = await axios.get(`/pizzas?${category !== 0 ? `category=${category}` : ''}&_sort=${sortBy.type}&_order=desc`)
 
         return response.data
     }
