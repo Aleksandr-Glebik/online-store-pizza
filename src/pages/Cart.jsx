@@ -1,17 +1,33 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
-import { CartItem } from '../components'
+import { useDispatch, useSelector } from 'react-redux'
+import { CartEmpty, CartItem } from '../components'
+import { clearCart, deleteOneGroupPizza } from '../redux/slices/cartSlice'
+import { Link } from 'react-router-dom'
 
 function Cart() {
+  const dispatch = useDispatch()
   const { items, totalPrice, totalCount } = useSelector( ({cart}) => cart)
 
   const pizzaGroup = Object.keys(items).map( key => {
     return items[key].items[0]
   })
 
+  const onClearCart = () => {
+    if (window.confirm('Подтвердите намерение очистить корзину')) {
+      dispatch(clearCart())
+    }
+  }
+  const onRemovePizzaGroup = (id) => {
+    if (window.confirm('Подтвердите удаление данной группы пицц')) {
+      dispatch(deleteOneGroupPizza(id))
+    }
+  }
+
   return (
     <div className="container container--cart">
-      <div className="cart">
+      {totalCount
+        ? (
+        <div className="cart">
         <div className="cart__top">
           <h2 className="content__title">
             <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,21 +43,26 @@ function Cart() {
             <path d="M8.33337 9.16667V14.1667" stroke="#B6B6B6" strokeWidth="1.2"  strokeLinecap="round"  strokeLinejoin="round"/>
             <path d="M11.6666 9.16667V14.1667" stroke="#B6B6B6" strokeWidth="1.2"  strokeLinecap="round"  strokeLinejoin="round"/>
             </svg>
-            <span>Очистить корзину</span>
+            <span
+              onClick={onClearCart}
+            >
+              Очистить корзину
+            </span>
           </div>
         </div>
         <div className="content__items">
           {pizzaGroup && pizzaGroup.map( obj => (
             <CartItem
               key={obj.id}
+              id={obj.id}
               name={obj.name}
               type={obj.type}
               size={obj.size}
               imageUrl={obj.imageUrl}
               totalPricePizzaGroup={items[obj.id].totalPriceCurrentPizzaGroup}
               totalCountPizzaGroup={items[obj.id].items.length}
-            />
-          ))}
+              onRemove={onRemovePizzaGroup}
+            />))}
         </div>
         <div className="cart__bottom">
         <div className="cart__bottom-details">
@@ -49,18 +70,22 @@ function Cart() {
           <span> Сумма заказа: <b>{totalPrice} ₽</b> </span>
         </div>
         <div className="cart__bottom-buttons">
-          <a href="/" className="button button--outline button--add go-back-btn">
+          <Link to="/" className="button button--outline button--add go-back-btn">
             <svg width="8" height="14" viewBox="0 0 8 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M7 13L1 6.93015L6.86175 1" stroke="#D3D3D3" strokeWidth="1.5"  strokeLinecap="round"  strokeLinejoin="round"/>
             </svg>
             <span>Вернуться назад</span>
-          </a>
+          </Link>
           <div className="button pay-btn">
             <span>Оплатить сейчас</span>
           </div>
         </div>
         </div>
       </div>
+      )
+        : <CartEmpty />
+      }
+
     </div>
   )
 }
