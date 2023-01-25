@@ -50,10 +50,46 @@ const cartSlice = createSlice({
             state.items = newItems
             state.totalPrice = state.totalPrice - currentTotalPrice
             state.totalCount = state.totalCount - currentTotalCount
+        },
+        addOneCartPizza(state, action) {
+            const newItems = [
+                ...state.items[action.payload].items,
+                state.items[action.payload].items[0]
+            ]
+
+            return {
+                ...state,
+                items: {
+                    ...state.items,
+                    [action.payload]: {
+                        items: newItems,
+                        totalPriceCurrentPizzaGroup: getTotalPrice(newItems)
+                    }
+                },
+                totalPrice: getTotalPrice(newItems),
+                totalCount: newItems.length,
+            }
+        },
+        deleteOneCartPizza(state, action) {
+            const oldItems =  state.items[action.payload].items
+            const newItems = oldItems.length > 1 ? state.items[action.payload].items.slice(1) : oldItems
+
+            return {
+                ...state,
+                items: {
+                    ...state.items,
+                    [action.payload]: {
+                        items: newItems,
+                        totalPriceCurrentPizzaGroup: getTotalPrice(newItems)
+                    }
+                },
+                totalPrice: getTotalPrice(newItems),
+                totalCount: newItems.length,
+            }
         }
     }
 })
 
-export const { addCart, clearCart, deleteOneGroupPizza } = cartSlice.actions
+export const { addCart, clearCart, deleteOneGroupPizza, addOneCartPizza, deleteOneCartPizza } = cartSlice.actions
 
 export default cartSlice.reducer

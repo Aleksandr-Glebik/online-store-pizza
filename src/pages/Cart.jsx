@@ -1,8 +1,9 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { CartEmpty, CartItem } from '../components'
-import { clearCart, deleteOneGroupPizza } from '../redux/slices/cartSlice'
+import { clearCart, deleteOneGroupPizza, addOneCartPizza, deleteOneCartPizza } from '../redux/slices/cartSlice'
 import { Link } from 'react-router-dom'
+import {Button} from '../components'
 
 function Cart() {
   const dispatch = useDispatch()
@@ -21,6 +22,15 @@ function Cart() {
     if (window.confirm('Подтвердите удаление данной группы пицц')) {
       dispatch(deleteOneGroupPizza(id))
     }
+  }
+  const onAddCartPizza = (id) => {
+    dispatch(addOneCartPizza(id))
+  }
+  const onDeleteCartPizza = (id) => {
+    dispatch(deleteOneCartPizza(id))
+  }
+  const onClickOrder = () => {
+    console.log('Ваш заказ', items)
   }
 
   return (
@@ -62,6 +72,8 @@ function Cart() {
               totalPricePizzaGroup={items[obj.id].totalPriceCurrentPizzaGroup}
               totalCountPizzaGroup={items[obj.id].items.length}
               onRemove={onRemovePizzaGroup}
+              onAddCart={onAddCartPizza}
+              onDeleteCart={onDeleteCartPizza}
             />))}
         </div>
         <div className="cart__bottom">
@@ -76,9 +88,12 @@ function Cart() {
             </svg>
             <span>Вернуться назад</span>
           </Link>
-          <div className="button pay-btn">
+          <Button
+            className="button pay-btn"
+            onClick={onClickOrder}
+          >
             <span>Оплатить сейчас</span>
-          </div>
+          </Button>
         </div>
         </div>
       </div>
